@@ -28,8 +28,7 @@ public class Recipe {
   private String source;
   private String url;
 
-  @Lob
-  private String directions;
+  @Lob private String directions;
 
   @Lob private Byte[] image;
 
@@ -39,8 +38,7 @@ public class Recipe {
   @OneToOne(cascade = CascadeType.ALL)
   private Note note;
 
-  @OneToMany(cascade = CascadeType.ALL,
-      mappedBy = "recipe")
+  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
   private Set<Ingredient> ingredients = new HashSet<>();
 
   @ManyToMany
@@ -49,7 +47,6 @@ public class Recipe {
       joinColumns = @JoinColumn(name = "recipe_id"),
       inverseJoinColumns = @JoinColumn(name = "category_id"))
   private Set<Category> categories = new HashSet<>();
-
 
   public Set<Ingredient> getIngredients() {
     return ingredients;
@@ -129,6 +126,7 @@ public class Recipe {
 
   public void setNote(Note note) {
     this.note = note;
+    note.setRecipe(this);
   }
 
   public Difficulty getDifficulty() {
@@ -146,5 +144,10 @@ public class Recipe {
   public void setCategories(Set<Category> categories) {
     this.categories = categories;
   }
-}
 
+  public Recipe addIngredient(Ingredient ingredient) {
+    ingredient.setRecipe(this);
+    this.ingredients.add(ingredient);
+    return this;
+  }
+}
