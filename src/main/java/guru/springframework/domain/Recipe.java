@@ -1,5 +1,6 @@
 package guru.springframework.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -8,6 +9,8 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
@@ -20,11 +23,14 @@ public class Recipe {
   private Long id;
 
   private String description;
-  private Integer prepTIme;
-  private Integer cooktime;
+  private Integer prepTime;
+  private Integer CookTime;
   private String source;
   private String url;
+
+  @Lob
   private String directions;
+
   @Lob private Byte[] image;
 
   @Enumerated(value = EnumType.STRING)
@@ -33,11 +39,17 @@ public class Recipe {
   @OneToOne(cascade = CascadeType.ALL)
   private Note note;
 
-  @ManyToMany
-  private Set<Category> categories;
+  @OneToMany(cascade = CascadeType.ALL,
+      mappedBy = "recipe")
+  private Set<Ingredient> ingredients = new HashSet<>();
 
-  @OneToMany(cascade = CascadeType.ALL, mappedBy = "recipe")
-  private Set<Ingredient> ingredients;
+  @ManyToMany
+  @JoinTable(
+      name = "recipe_category",
+      joinColumns = @JoinColumn(name = "recipe_id"),
+      inverseJoinColumns = @JoinColumn(name = "category_id"))
+  private Set<Category> categories = new HashSet<>();
+
 
   public Set<Ingredient> getIngredients() {
     return ingredients;
@@ -63,20 +75,20 @@ public class Recipe {
     this.description = description;
   }
 
-  public Integer getPrepTIme() {
-    return prepTIme;
+  public Integer getPrepTime() {
+    return prepTime;
   }
 
-  public void setPrepTIme(Integer prepTIme) {
-    this.prepTIme = prepTIme;
+  public void setPrepTime(Integer prepTIme) {
+    this.prepTime = prepTIme;
   }
 
-  public Integer getCooktime() {
-    return cooktime;
+  public Integer getCookTime() {
+    return CookTime;
   }
 
-  public void setCooktime(Integer cooktime) {
-    this.cooktime = cooktime;
+  public void setCookTime(Integer cooktime) {
+    this.CookTime = cooktime;
   }
 
   public String getSource() {
@@ -135,3 +147,4 @@ public class Recipe {
     this.categories = categories;
   }
 }
+

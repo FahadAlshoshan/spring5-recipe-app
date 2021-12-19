@@ -14,7 +14,7 @@ public class Category {
   private Long id;
   private String description;
 
-  @ManyToMany
+  @ManyToMany(mappedBy = "categories")
   private Set<Recipe> recipes;
 
   public Long getId() {
@@ -40,4 +40,5 @@ public class Category {
   public void setRecipes(Set<Recipe> recipes) {
     this.recipes = recipes;
   }
+
 }

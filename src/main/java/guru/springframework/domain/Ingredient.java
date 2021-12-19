@@ -6,11 +6,14 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
 @Entity
 public class Ingredient {
+
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -23,6 +26,18 @@ public class Ingredient {
 
   @OneToOne(fetch = FetchType.EAGER)
   private UnitOfMeasure unitOfMeasure;
+
+  public Ingredient() {
+  }
+
+  public Ingredient(String description, BigDecimal amount,
+      UnitOfMeasure unitOfMeasure, Recipe recipe) {
+    this.description = description;
+    this.amount = amount;
+    this.recipe = recipe;
+    this.unitOfMeasure = unitOfMeasure;
+  }
+
 
   public Long getId() {
     return id;
@@ -63,4 +78,5 @@ public class Ingredient {
   public void setUnitOfMeasure(UnitOfMeasure unitOfMeasure) {
     this.unitOfMeasure = unitOfMeasure;
   }
+
 }
