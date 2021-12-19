@@ -12,10 +12,14 @@ import guru.springframework.repositories.UnitOfMeasureRepository;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
+
+@Slf4j
 @Component
 public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEvent> {
   private final RecipeRepository recipeRepository;
@@ -32,8 +36,10 @@ public class RecipeBootStrap implements ApplicationListener<ContextRefreshedEven
   }
 
   @Override
+  @Transactional
   public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
     recipeRepository.saveAll(getRecipes());
+    log.debug("Loading Data");
   }
 
   private List<Recipe> getRecipes() {

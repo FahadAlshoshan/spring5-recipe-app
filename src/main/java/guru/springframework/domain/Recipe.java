@@ -15,7 +15,9 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import lombok.Data;
 
+@Data
 @Entity
 public class Recipe {
   @Id
@@ -48,101 +50,9 @@ public class Recipe {
       inverseJoinColumns = @JoinColumn(name = "category_id"))
   private Set<Category> categories = new HashSet<>();
 
-  public Set<Ingredient> getIngredients() {
-    return ingredients;
-  }
-
-  public void setIngredients(Set<Ingredient> ingredients) {
-    this.ingredients = ingredients;
-  }
-
-  public Long getId() {
-    return id;
-  }
-
-  public void setId(Long id) {
-    this.id = id;
-  }
-
-  public String getDescription() {
-    return description;
-  }
-
-  public void setDescription(String description) {
-    this.description = description;
-  }
-
-  public Integer getPrepTime() {
-    return prepTime;
-  }
-
-  public void setPrepTime(Integer prepTIme) {
-    this.prepTime = prepTIme;
-  }
-
-  public Integer getCookTime() {
-    return CookTime;
-  }
-
-  public void setCookTime(Integer cooktime) {
-    this.CookTime = cooktime;
-  }
-
-  public String getSource() {
-    return source;
-  }
-
-  public void setSource(String source) {
-    this.source = source;
-  }
-
-  public String getUrl() {
-    return url;
-  }
-
-  public void setUrl(String url) {
-    this.url = url;
-  }
-
-  public String getDirections() {
-    return directions;
-  }
-
-  public void setDirections(String directions) {
-    this.directions = directions;
-  }
-
-  public Byte[] getImage() {
-    return image;
-  }
-
-  public void setImage(Byte[] image) {
-    this.image = image;
-  }
-
-  public Note getNote() {
-    return note;
-  }
-
   public void setNote(Note note) {
     this.note = note;
     note.setRecipe(this);
-  }
-
-  public Difficulty getDifficulty() {
-    return difficulty;
-  }
-
-  public void setDifficulty(Difficulty difficulty) {
-    this.difficulty = difficulty;
-  }
-
-  public Set<Category> getCategories() {
-    return categories;
-  }
-
-  public void setCategories(Set<Category> categories) {
-    this.categories = categories;
   }
 
   public Recipe addIngredient(Ingredient ingredient) {
