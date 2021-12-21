@@ -1,21 +1,10 @@
 package guru.springframework.domain;
 
+import lombok.Data;
+
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import lombok.Data;
 
 @Data
 @Entity
@@ -29,6 +18,7 @@ public class Recipe {
   private Integer CookTime;
   private String source;
   private String url;
+  private Integer servings;
 
   @Lob private String directions;
 
@@ -51,8 +41,10 @@ public class Recipe {
   private Set<Category> categories = new HashSet<>();
 
   public void setNote(Note note) {
-    this.note = note;
-    note.setRecipe(this);
+    if (note != null) {
+      this.note = note;
+      note.setRecipe(this);
+    }
   }
 
   public Recipe addIngredient(Ingredient ingredient) {
