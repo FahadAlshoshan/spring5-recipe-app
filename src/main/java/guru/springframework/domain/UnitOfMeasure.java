@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Data
+
+@Getter
+@Setter
 @Entity
 public class UnitOfMeasure {
   @Id
