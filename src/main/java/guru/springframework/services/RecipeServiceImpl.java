@@ -4,12 +4,14 @@ import guru.springframework.commands.RecipeCommand;
 import guru.springframework.converters.RecipeCommandToRecipe;
 import guru.springframework.converters.RecipeToRecipeCommand;
 import guru.springframework.domain.Recipe;
+import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.repositories.RecipeRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 @Slf4j
@@ -38,7 +40,15 @@ public class RecipeServiceImpl implements RecipeService {
 
   @Override
   public Recipe findById(Long id) {
-    return recipeRepository.findById(id).orElse(null);
+
+
+    Optional<Recipe> recipeOptional = recipeRepository.findById(id);
+
+    if (!recipeOptional.isPresent()) {
+      throw new NotFoundException("Recipe Not Found. For Recipe id: "+id);
+    }
+
+    return recipeOptional.get();
   }
 
   @Override
@@ -58,7 +68,7 @@ public class RecipeServiceImpl implements RecipeService {
   }
 
   @Override
-  public void deleteById(Long id){
+  public void deleteById(Long id) {
     recipeRepository.deleteById(id);
   }
 }

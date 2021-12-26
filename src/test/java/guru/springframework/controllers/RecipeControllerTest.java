@@ -2,6 +2,7 @@ package guru.springframework.controllers;
 
 import guru.springframework.commands.RecipeCommand;
 import guru.springframework.domain.Recipe;
+import guru.springframework.exceptions.NotFoundException;
 import guru.springframework.services.RecipeService;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,7 +28,33 @@ public class RecipeControllerTest {
     MockitoAnnotations.initMocks(this);
     recipeController = new RecipeController(recipeService);
 
-    mockMvc = MockMvcBuilders.standaloneSetup(recipeController).build();
+    mockMvc =
+        MockMvcBuilders.standaloneSetup(recipeController)
+            .setControllerAdvice(new ControllerExceptionHandler())
+            .build();
+  }
+
+  @Test
+  public void testGetRecipeNotFound() throws Exception {
+    Recipe recipe = new Recipe();
+    recipe.setId(1L);
+
+    when(recipeService.findById(anyLong())).thenThrow(NotFoundException.class);
+
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/recipe/1/show"))
+        .andExpect(status().isNotFound())
+        .andExpect(view().name("404error"));
+  }
+
+  @Test
+  public void testGetRecipeNumberFormat() throws Exception {
+    Recipe recipe = new Recipe();
+    recipe.setId(1L);
+    mockMvc
+        .perform(MockMvcRequestBuilders.get("/recipe/s/show"))
+        .andExpect(status().isBadRequest())
+        .andExpect(view().name("400error"));
   }
 
   @Test
@@ -76,22 +103,23 @@ public class RecipeControllerTest {
 
     when(recipeService.saveRecipeCommand(any())).thenReturn(command);
 
-    mockMvc
-        .perform(
-            MockMvcRequestBuilders.post("/recipe")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "")
-                .param("description", "some description"))
-        .andExpect(status().is3xxRedirection())
-        .andExpect(view().name("redirect:/recipe/2/show"));
+    mockMvc.perform(MockMvcRequestBuilders.post("/recipe")
+                    .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                    .param("id", "")
+                    .param("description", "some string")
+                    .param("directions", "some directions")
+                    .param("url", "https://someurl.com")
+
+            )
+            .andExpect(view().name("redirect:/recipe/2/show"));
   }
+
   @Test
   public void testDeleteRecipe() throws Exception {
     mockMvc
-            .perform(MockMvcRequestBuilders.get("/recipe/1/delete"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/"));
+        .perform(MockMvcRequestBuilders.get("/recipe/1/delete"))
+        .andExpect(status().is3xxRedirection())
+        .andExpect(view().name("redirect:/"));
     verify(recipeService, times(1)).deleteById(anyLong());
   }
-
 }
